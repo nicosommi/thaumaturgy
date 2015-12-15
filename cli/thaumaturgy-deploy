@@ -54,6 +54,8 @@ function build(){
 		var basePath = path.join(__dirname, '..');
 
 		archive.directory(basePath + '/lib/npm' + config.npmVersion,'node_modules/npm');
+		archive.directory(basePath + '/node_modules/osenv','node_modules/npm/node_modules/osenv');
+		archive.directory(basePath + '/node_modules/mkdirp','node_modules/npm/node_modules/mkdirp');
 		archive.directory(basePath + '/node_modules/nopt','node_modules/nopt');
 		archive.directory(basePath + '/node_modules/archiver','node_modules/archiver');
 		archive.file(basePath + '/package.json', { name : 'package.json'});
