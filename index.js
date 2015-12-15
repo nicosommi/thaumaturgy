@@ -80,11 +80,11 @@ exports.handler = function(event, context) {
 				title: "thaumaturgybuild",
 				dependencies: packages
 			};
-			
+
 			fs.writeFileSync('/tmp/thaumaturgy/package.json', JSON.stringify(packagejson, null, 4));
-			
+
 			console.log('wrote package.json');
-			
+
 			exec('node node_modules/npm/bin/npm-cli.js install', function(err, stdio, stderr) {
 				if (err) context.fail(err);
 				else {
@@ -99,7 +99,7 @@ exports.handler = function(event, context) {
 									console.log(data);
 									context.succeed(data);
 								}
-							});							
+							});
 						}
 					});
 				}

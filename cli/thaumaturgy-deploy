@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-
+var extract = require('extract-zip');
+var rimraf = require('rimraf');
 var prompt = require('prompt');
 var fs = require('fs');
 var osenv = require('osenv');
@@ -36,31 +37,46 @@ function build(){
 		console.log('Creating Thaumaturgy Lambda zip file.');
 		console.log('Using NPM %s.', config.npmVersion);
 
-		mkdirp.sync(buildDir)
-
-		var output = fs.createWriteStream(buildDir + '/thaumaturgy.zip');
-		var archive = archiver.create('zip', {}); // or archiver('zip', {});
-		archive.pipe(output);
-
-		output.on('close', function() {
-		  console.log('Thaumaturgy Lambda zip file built.');
-		  resolve();
-		});
-
-		archive.on('error', function(err) {
-		  reject(err);
-		});
-
 		var basePath = path.join(__dirname, '..');
+		var tempDir = basePath + "/.tmp";
 
-		archive.directory(basePath + '/lib/npm' + config.npmVersion,'node_modules/npm');
-		archive.directory(basePath + '/node_modules/osenv','node_modules/npm/node_modules/osenv');
-		archive.directory(basePath + '/node_modules/mkdirp','node_modules/npm/node_modules/mkdirp');
-		archive.directory(basePath + '/node_modules/nopt','node_modules/nopt');
-		archive.directory(basePath + '/node_modules/archiver','node_modules/archiver');
-		archive.file(basePath + '/package.json', { name : 'package.json'});
-		archive.file(basePath + '/index.js', { name : 'index.js'});
-		archive.finalize();
+		extract(basePath + '/lib/npm' + config.npmVersion + '.zip', {dir: tempDir},
+			function(unzipError) {
+				if(unzipError) console.log('Npm version ZIP not found.');
+
+				mkdirp.sync(buildDir);
+
+				var output = fs.createWriteStream(buildDir + '/thaumaturgy.zip');
+				var archive = archiver.create('zip', {});
+				archive.pipe(output);
+
+				output.on('close', function() {
+				  console.log('Thaumaturgy Lambda zip file built.');
+					rimraf(tempDir, function (deleteError) {
+						if(deleteError) console.log("rimraf error", {error: deleteError});
+						resolve();
+					});
+				});
+
+				archive.on('error', function(err) {
+					rimraf(tempDir, function () {
+						if(deleteError) console.log("rimraf error", {error: deleteError});
+						reject(err);
+					});
+				});
+
+
+
+				archive.directory(tempDir,'node_modules/npm');
+				archive.directory(basePath + '/node_modules/archiver','node_modules/archiver');
+				archive.file(basePath + '/package.json', { name : 'package.json'});
+				archive.file(basePath + '/index.js', { name : 'index.js'});
+
+				//this dep is shared with npm, so I took it off the npm zip package so it doesn't increase the lambda zip size
+				archive.directory(basePath + '/node_modules/nopt','node_modules/nopt');
+				archive.finalize();
+			}
+		);
 	});
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "thaumaturgy",
-  "version": "0.5.0",
+  "version": "0.5.4",
   "description": "Build Node.js packages in AWS Lambda using AWS Lambda.",
   "main": "index.js",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/node-hocus-pocus/thaumaturgy.git"    
+    "url": "https://github.com/node-hocus-pocus/thaumaturgy.git"
   },
   "author": "John Titus",
   "license": "MIT",
@@ -17,10 +17,12 @@
     "aws-sdk": "^2.2.4",
     "bluebird": "^2.10.1",
     "commander": "^2.8.1",
+    "extract-zip": "^1.3.0",
     "install": "^0.1.8",
     "mkdirp": "^0.5.1",
     "nopt": "^3.0.4",
     "osenv": "^0.1.3",
-    "prompt": "^0.2.14"
+    "prompt": "^0.2.14",
+    "rimraf": "^2.4.4"
   }
 }

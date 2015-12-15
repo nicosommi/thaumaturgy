@@ -33,9 +33,9 @@ var schema = {
 		},
 		'npmVersion' :{
 			required : true,
-			description: 'NPM Version (2 or 3):'.cyan,
-			enum: ['2', '3'],
-			message : 'Must be version 2 or 3'
+			description: 'NPM Version (2):'.cyan,
+			enum: ['2'],
+			message : 'Must be version 2'
 		}
 	}
 }
@@ -44,7 +44,7 @@ prompt.message = '';
 prompt.delimiter = '';
 prompt.start();
 prompt.get(schema, function(err, options) {
-	
+
 	if (err) {
 		console.error('\nConfiguration stopped.');
 	}
@@ -52,7 +52,7 @@ prompt.get(schema, function(err, options) {
 		var workDir = osenv.home() + '/.thaumaturgy';
 		mkdirp.sync(workDir);
 		console.log('Created dirctory: ' + workDir);
-		fs.writeFileSync(workDir + '/config.json',JSON.stringify(options,null,4));		
+		fs.writeFileSync(workDir + '/config.json',JSON.stringify(options,null,4));
 		console.log('Wrote file: ' + workDir + '/config.json')
 		console.log('Thaumaturgy configure complete.')
 	}
